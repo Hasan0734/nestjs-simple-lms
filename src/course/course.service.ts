@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -26,19 +26,24 @@ export class CourseService {
   }
 
   async findOne(id: string) {
-    const course = await this.courseModel.findOne({ _id: id })
+    const course = await this.courseModel.findOne({ _id: id }).exec();
+    if (!course) throw new NotFoundException()
+    console.log(course)
     return course;
   }
 
   async update(id: string, updateCourseDto: UpdateCourseDto) {
     const updated = await this.courseModel.findByIdAndUpdate({ _id: id }, updateCourseDto)
+    if (!updated) throw new NotFoundException()
     return {
       message: "Course updated successfully"
     };
   }
 
   async remove(id: string) {
-    await this.courseModel.findByIdAndDelete({ _id: id })
+
+    const course = await this.courseModel.findByIdAndDelete({ _id: id });
+    if (!course) throw new NotFoundException();
     return {
       message: "Course deleted!"
     };

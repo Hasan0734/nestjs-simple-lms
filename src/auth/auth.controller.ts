@@ -10,24 +10,24 @@ export class AuthController {
     constructor(private readonly authService: AuthService, private readonly userService: UserService) { }
 
     @Post("register")
-    register(@Body() registerUserDto: RegisterDto) {
-        
-        const user_token = this.authService.registerUser(registerUserDto);
+    async register(@Body() registerUserDto: RegisterDto) {
+
+        const user_token = await this.authService.registerUser(registerUserDto);
         return user_token;
     }
 
     @Post('login')
-    login(@Body() signInDto: SingInDto) {
+    async login(@Body() signInDto: SingInDto) {
 
-        const userData = this.authService.singIn(signInDto.email, signInDto.password);
+        const userData = await this.authService.singIn(signInDto.email, signInDto.password);
         return userData;
     }
 
     @UseGuards(AuthGuard)
     @Get('profile')
-    getProfile(@Request() req) {
+    async getProfile(@Request() req) {
         const userId = req.user.sub
-        const userData = this.userService.findUserById(userId)
+        const userData = await this.userService.findUserById(userId)
         return userData
     }
 }      
