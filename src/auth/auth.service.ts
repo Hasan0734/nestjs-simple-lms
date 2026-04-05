@@ -22,10 +22,10 @@ export class AuthService {
 
         const user = await this.userService.createUser({ ...registerUserDto, password: hash, role: 'student' });
 
-        const payload = { sub: user._id, email: user.email, role: user.role }
-        const token = await this.jwtService.signAsync(payload)
+        // const payload = { sub: user._id, email: user.email, role: user.role };
+        // const token = await this.jwtService.signAsync(payload)
 
-        return { access_token: token };
+        return user;
     }
 
     async singIn(email: string, password: string) {

@@ -11,13 +11,15 @@ export class UserService {
     async createUser(registerUserDto: RegisterDto) {
         try {
             return await this.userModel.create(registerUserDto)
-        } catch (error) {
+        } catch (err: unknown) {
+            
+            const error = err as { keyValue: string, code?: number }
             const keys = Object.keys(error.keyValue);
             const DUPLICATE_KEY_CODE = 11000
+
             if (error.code === DUPLICATE_KEY_CODE) {
                 const field = keys.map(key => key.charAt(0).toUpperCase() + key.slice(1)).join(", ");
-
-                throw new ConflictException(`${field} already is already taken`)
+                throw new ConflictException(`${field} is already taken`)
             }
             throw error;
         }
